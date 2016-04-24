@@ -17,7 +17,7 @@ module.exports = {
     app: [
       PATHS.app
     ],
-    vendor: ['ionic/release/js/ionic.bundle.js', 'angular-material', 'angular-aria', 'ngstorage', 'angular-messages', 'angular-translate', 'angular-translate-loader-partial']
+    vendor: ['angular', 'ionic/release/js/ionic.js', 'ionic/release/js/ionic-angular.js', 'angular-sanitize', 'angular-animate', 'angular-ui-router', 'angular-aria', 'ngstorage', 'angular-messages', 'angular-translate', 'angular-translate-loader-partial']
   },
   output: {
     path: PATHS.build,
