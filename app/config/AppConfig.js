@@ -1,4 +1,4 @@
-export default function AppConfig($urlRouterProvider, $mdGestureProvider) {
+export default function AppConfig($urlRouterProvider) {
   'ngInject';
 
   // 当 url 不匹配任何state 时就会进入这个方法
@@ -7,6 +7,6 @@ export default function AppConfig($urlRouterProvider, $mdGestureProvider) {
     $state.go('Page');
   });
 
-  $mdGestureProvider.skipClickHijack();
+  // $mdGestureProvider.skipClickHijack();
 
 }

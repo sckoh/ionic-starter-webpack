@@ -17,7 +17,7 @@ module.exports = {
     app: [
       PATHS.app
     ],
-    vendor: ['angular', 'angular-aria', 'angular-animate', 'angular-sanitize', 'angular-material', 'ngstorage', 'angular-messages', 'angular-translate', 'ionic-sdk/release/js/ionic', 'ionic-sdk/release/js/ionic-angular', 'ionic-datepicker', 'moment', 'angular-moment', 'ngCordova', 'ionic-filter-bar', 'angular-filter', 'angular-translate-loader-partial', 'angular-ui-router', 'lodash', 'angular-cache']
+    vendor: ['ionic/release/js/ionic.bundle.js', 'angular-material', 'angular-aria', 'ngstorage', 'angular-messages', 'angular-translate', 'angular-translate-loader-partial']
   },
   output: {
     path: PATHS.build,
@@ -57,7 +57,12 @@ module.exports = {
       include: PRIVATE_MODULES
     }, {
       test: /\.html$/,
-      loader: 'ngtemplate?relativeTo=components/!html',
+      loader: 'ngtemplate?relativeTo=components/',
+      exclude: /Lazy/,
+      include: /components/
+    }, {
+      test: /\.html$/,
+      loader: 'html',
       include: /components/
     }, {
       test: /\.woff/,
@@ -91,7 +96,7 @@ module.exports = {
   },
   plugins: [
     new webpack.ProvidePlugin({
-      _: 'lodash'
+      // _: 'lodash'
     }),
     new webpack.ResolverPlugin(
       new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin(

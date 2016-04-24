@@ -6,6 +6,7 @@ var WebpackDevServer = require('webpack-dev-server');
 var webpackConfig = require('./webpack.config.js');
 var argv = require('yargs').argv;
 var open = require('gulp-open');
+var connect = require('gulp-connect');
 
 argv.env = argv.env || 'development';
 
@@ -27,26 +28,61 @@ gulp.task('clean', function(done) {
     });
 });
 
+gulp.task('webserver', function() {
+  connect.server({
+    root: 'www',
+    port: '8081',
+    livereload: true
+  });
+});
+
 // Production build
 gulp.task('build', ['clean', 'webpack:build']);
 
 gulp.task('webpack:build', function(callback) {
   // modify some webpack config options
   var myConfig = Object.create(webpackConfig);
+  myConfig.devtool = 'source-map';
 
-  if (argv.env != 'development') {
-    console.log('argv.env: ' + argv.env);
-    myConfig.plugins = myConfig.plugins.concat(
-      new webpack.DefinePlugin({
-        'process.env': {
-          // This has effect on the react lib size
-          'NODE_ENV': JSON.stringify(argv.env || 'development')
-        }
-      }),
-      new webpack.optimize.DedupePlugin(),
-      new webpack.optimize.UglifyJsPlugin()
-    );
-  }
+  // if (argv.env != 'development') {
+  console.log('argv.env: ' + argv.env);
+  myConfig.plugins = myConfig.plugins.concat(
+    new webpack.DefinePlugin({
+      'process.env': {
+        // This has effect on the react lib size
+        'NODE_ENV': JSON.stringify(argv.env || 'development')
+      }
+    }),
+    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+      minimize: true,
+      sourceMap: false,
+      comments: false,
+      compress: {
+        warnings: false,
+        properties: true,
+        sequences: true,
+        dead_code: true,
+        conditionals: true,
+        comparisons: true,
+        evaluate: true,
+        booleans: true,
+        unused: true,
+        loops: true,
+        hoist_funs: true,
+        cascade: true,
+        if_return: true,
+        join_vars: true,
+        drop_console: true,
+        drop_debugger: true,
+        unsafe: true,
+        hoist_vars: true,
+        negate_iife: true
+      },
+    })
+  );
+  // }
 
   // run webpack
   webpack(myConfig, function(err, stats) {
@@ -54,6 +90,7 @@ gulp.task('webpack:build', function(callback) {
     gutil.log('[webpack:build]', stats.toString({
       colors: true
     }));
+
     callback();
   });
 });
@@ -106,7 +143,7 @@ gulp.task('webpack-dev-server', function(callback) {
     stats: {
       colors: true
     }
-  }).listen(8080, 'localhost', function(err) {
+  }).listen(8080, '0.0.0.0', function(err) {
     if (err) throw new gutil.PluginError('webpack-dev-server', err);
     gutil.log('[webpack-dev-server]', 'http://localhost:8080/webpack-dev-server');
   });

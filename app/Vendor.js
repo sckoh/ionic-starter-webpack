@@ -1,13 +1,11 @@
+import 'oclazyload';
+
 export default angular.module('Vendor', [
     'ionic',
-    'pascalprecht.translate',
     'ngMaterial',
+    'pascalprecht.translate',
     'ngStorage',
     'ngMessages',
-    'angular-cache',
-    'ionic-datepicker',
-    'ngCordova',
-    'angular.filter',
-    'jett.ionic.filter.bar'
+    'oc.lazyLoad'
   ])
   .name;
