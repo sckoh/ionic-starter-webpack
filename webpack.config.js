@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const BowerWebpackPlugin = require('bower-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const PATHS = {
   app: path.join(__dirname, 'app'),
   build: path.join(__dirname, 'www'),
@@ -21,7 +22,7 @@ module.exports = {
   },
   output: {
     path: PATHS.build,
-    filename: '[name].js',
+    filename: '[name].[chunkhash].js',
     chunkFilename: '[chunkhash].js',
     hash: true
   },
@@ -47,10 +48,10 @@ module.exports = {
     }],
     loaders: [{
       test: /\.css$/,
-      loader: 'style!css'
+      loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
     }, {
       test: /\.scss$/,
-      loader: 'style!css!sass?outputStyle=expanded'
+      loader: ExtractTextPlugin.extract('style-loader', 'css-loader!sass-loader')
     }, {
       test: /\.js$/,
       loaders: ['ng-annotate', 'babel?cacheDirectory&presets[]=react,presets[]=es2015,presets[]=stage-1'],
@@ -96,11 +97,11 @@ module.exports = {
   },
   plugins: [
     new webpack.ProvidePlugin({
-      // _: 'lodash'
+      _: 'lodash'
     }),
     new webpack.ResolverPlugin(
       new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin(
-        'package.json', ['main']
+        'package.json', true
       )
     ),
     new BowerWebpackPlugin({
@@ -115,6 +116,7 @@ module.exports = {
       template: './app/index.html',
       inject: 'body'
     }),
+    new ExtractTextPlugin('[name].[contenthash].css'),
     new webpack.NoErrorsPlugin()
   ]
 };
